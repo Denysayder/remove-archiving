@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-// Get directory path from command-line arguments
 const inputPath = process.argv[2];
 if (!inputPath) {
   console.error('Error: Directory path must be specified.');
@@ -29,10 +28,8 @@ async function deleteArchivedCompanies(directory) {
     for (const company of companies) {
       const companyPath = path.join(directory, company);
 
-      console.log(`Deleting directory: ${companyPath}`);
       fs.rmSync(companyPath, { recursive: true, force: true });
 
-      // Commit changes
       const quotedPath = `"${path.resolve(directory)}"`;
       runGitCommand(`git add -A ${quotedPath}`);
       runGitCommand(`git commit -m "Deactivating ${company}"`);
