@@ -7,7 +7,6 @@ const archivedPath = path.join(__dirname, 'e_templates/templates/_archived');
 function runGitCommand(command) {
   try {
     const output = execSync(command, { stdio: 'pipe' }).toString();
-    console.log(`Command output: ${output}`);
   } catch (error) {
     console.error(`Failed to execute command: ${command}`);
     process.exit(1);
@@ -25,10 +24,6 @@ async function deleteArchivedCompanies() {
 
       console.log(`Deleting directory: ${companyPath}`);
       fs.rmSync(companyPath, { recursive: true, force: true });
-      console.log(`Directory deleted: ${companyPath}`);
-
-      // Ensure correct working directory
-      console.log('Current working directory:', process.cwd());
 
       // Commit changes
       const quotedPath = `"${path.resolve(archivedPath)}"`;
