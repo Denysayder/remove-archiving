@@ -2,7 +2,14 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-const archivedPath = path.join(__dirname, 'e_templates/templates/_archived');
+// Get directory path from command-line arguments
+const inputPath = process.argv[2];
+if (!inputPath) {
+  console.error('Error: Directory path must be specified.');
+  process.exit(1);
+}
+
+const targetPath = path.resolve(__dirname, inputPath);
 
 function runGitCommand(command) {
   try {
@@ -13,20 +20,20 @@ function runGitCommand(command) {
   }
 }
 
-async function deleteArchivedCompanies() {
+async function deleteArchivedCompanies(directory) {
   try {
-    const companies = fs.readdirSync(archivedPath, { withFileTypes: true })
+    const companies = fs.readdirSync(directory, { withFileTypes: true })
       .filter(dirent => dirent.isDirectory())
       .map(dirent => dirent.name);
 
     for (const company of companies) {
-      const companyPath = path.join(archivedPath, company);
+      const companyPath = path.join(directory, company);
 
       console.log(`Deleting directory: ${companyPath}`);
       fs.rmSync(companyPath, { recursive: true, force: true });
 
       // Commit changes
-      const quotedPath = `"${path.resolve(archivedPath)}"`;
+      const quotedPath = `"${path.resolve(directory)}"`;
       runGitCommand(`git add -A ${quotedPath}`);
       runGitCommand(`git commit -m "Deactivating ${company}"`);
       console.log(`Committed deletion for ${company}`);
@@ -37,4 +44,4 @@ async function deleteArchivedCompanies() {
   }
 }
 
-deleteArchivedCompanies();
+deleteArchivedCompanies(targetPath);
