@@ -35,10 +35,6 @@ async function deleteArchivedCompanies() {
       runGitCommand(`git add -A ${quotedPath}`);
       runGitCommand(`git commit -m "Deactivating ${company}"`);
       console.log(`Committed deletion for ${company}`);
-
-      // Push changes to the remote repository
-      runGitCommand(`git push`);
-      console.log(`Pushed changes for ${company}`);
     }
     console.log('All companies have been processed.');
   } catch (error) {
